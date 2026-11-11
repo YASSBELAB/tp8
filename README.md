@@ -283,3 +283,219 @@ Cette requête permet de créer une nouvelle commande.
 
 <img width="433" height="532" alt="uml" src="https://github.com/user-attachments/assets/7dc778af-7295-4cec-a332-4033e2d53922" />
 
+"Exemple de requête Postman rejetée (statut 401 Unauthorized) illustrant l'accès refusé à une route protégée sans authentification valide."
+
+<img width="711" height="622" alt="Screenshot 2026-11-11 032625" src="https://github.com/user-attachments/assets/4779ed14-be42-4065-a6c1-f4938b61a0d8" />
+
+
+Exemple de requête Postman réussie (statut 201) démontrant l'enregistrement d'un nouvel utilisateur et la génération d'un jeton d'accès (token)."
+
+<img width="665" height="571" alt="Screenshot 2026-11-11 033421" src="https://github.com/user-attachments/assets/e26e7bd7-17b6-4448-813b-93abc73b999a" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) démontrant l'authentification d'un utilisateur (login) et l'obtention d'un jeton d'accès (token)."
+
+
+
+<img width="603" height="542" alt="login" src="https://github.com/user-attachments/assets/49db170e-e83d-420e-b601-e54b98e66e12" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant l'accès aux informations de l'utilisateur connecté via une route protégée en utilisant un jeton Bearer (Bearer Token)."
+
+
+<img width="713" height="632" alt="Screenshot 2026-11-11 034123" src="https://github.com/user-attachments/assets/e3f4e16c-ae4f-4095-98f9-0bf3004e9d90" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) démontrant l'authentification d'un utilisateur (login) avec l'inclusion du paramètre 'device_name', et la récupération d'un jeton d'accès (token)."
+
+
+
+<img width="696" height="569" alt="logindevice" src="https://github.com/user-attachments/assets/632f260d-a24f-40b9-9817-2e27c7fbe287" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la récupération des informations de l'utilisateur actuellement connecté via la route /api/auth/me en utilisant un jeton Bearer (Bearer Token)."
+
+
+<img width="649" height="591" alt="Screenshot 2026-11-11 035219" src="https://github.com/user-attachments/assets/ada890bf-e0a7-42ea-a546-12c2c16de313" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la déconnexion d'un utilisateur (logout) via la route /api/auth/logout en utilisant un jeton Bearer."
+
+
+
+<img width="624" height="569" alt="Screenshot 2026-11-11 040041" src="https://github.com/user-attachments/assets/7ed61763-5b30-4879-80b7-41c231401103" />
+
+
+
+"Exemple de requête Postman rejetée (statut 401 Unauthorized) confirmant l'invalidation du jeton d'accès après la déconnexion, lors d'une tentative d'accès à la route protégée /api/auth/me."
+
+
+
+<img width="665" height="569" alt="logedout" src="https://github.com/user-attachments/assets/39111ddb-9098-4528-a347-aaf7268e9ef0" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la récupération et l'affichage de la liste des produits via la route /api/products.
+
+
+<img width="639" height="601" alt="admin see" src="https://github.com/user-attachments/assets/974b8c5a-a5cf-4e6d-acae-b771ac756892" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la récupération des détails d'un produit spécifique via la route /api/products/{id}."
+
+
+<img width="647" height="635" alt="adminsee" src="https://github.com/user-attachments/assets/64767c2d-4048-4219-ae0b-74ce7c11479a" />
+
+
+"Exemple de requête Postman rejetée (statut 401 Unauthorized) admin post without token illustrant l'accès refusé lors d'une tentative de création d'un produit (POST) via la route /api/products/ sans jeton d'authentification."
+
+
+<img width="653" height="559" alt="afmin post without token" src="https://github.com/user-attachments/assets/3310e8ac-36f7-405b-b656-8635dfad5dce" />
+
+
+
+"Exemple de requête Postman réussie (statut 201 Created) illustrant la création d'un nouveau produit via la route /api/products/ en utilisant un jeton d'authentification valide."
+
+
+
+<img width="689" height="620" alt="adminpostwithtoke" src="https://github.com/user-attachments/assets/4c98d432-d0dd-4bb6-ac8e-756122e38b55" />
+
+
+"Exemple de requête Postman réussie admin update (statut 200 OK) illustrant la mise à jour (PUT) des informations d'un produit existant via la route /api/products/{id} avec les autorisations appropriées."
+
+
+<img width="708" height="638" alt="admincanupdate" src="https://github.com/user-attachments/assets/817a1d43-f3e6-4312-ad14-f5490aa4cb0f" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) illustrant l'accès refusé pour un utilisateur standard tentant de créer un produit via la route /api/products (vérification des rôles et autorisations)."
+
+
+<img width="601" height="604" alt="normalusercreate" src="https://github.com/user-attachments/assets/dda888ea-b64a-422a-93b8-7b07d569e6e7" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant qu'un utilisateur authentifié est autorisé à consulter la liste (paginée) des produits via la route /api/products."
+
+
+
+<img width="646" height="626" alt="cansee" src="https://github.com/user-attachments/assets/bfce429b-11df-4d70-87bc-3a01698b4662" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour mettre à jour (PUT) un produit via la route /api/products/{id}."
+
+
+<img width="695" height="647" alt="updatenormaluser" src="https://github.com/user-attachments/assets/409c7163-9337-420f-a35f-6ff1a9c73c52" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour supprimer (DELETE) un produit via la route /api/products/{id}."
+
+
+
+<img width="651" height="652" alt="normaldeleteerror" src="https://github.com/user-attachments/assets/a7ee4a1f-fbbf-4b5c-a14a-2d99f692831a" />
+
+
+"Exemple de requête Postman réussie (statut 204 No Content) illustrant la suppression d'un produit (DELETE) via la route /api/products/{id} par un utilisateur disposant des privilèges d'administrateur."
+
+
+<img width="644" height="535" alt="admindelete" src="https://github.com/user-attachments/assets/0d7e22e9-8c79-4e1e-ba15-3b7fe06232e9" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la récupération de la liste des commandes (et des détails clients associés) admin see all orders via la route /api/orders."
+
+
+<img width="779" height="621" alt="adminseeorders" src="https://github.com/user-attachments/assets/7d64a6fb-0294-4516-9f8d-6dd3f64e3324" />
+
+
+
+"Exemple de requête Postman réussie (statut 201 Created) illustrant la création d'une nouvelle commande (incluant les détails du client et les produits commandés)admin post order via la route /api/orders."
+
+
+<img width="709" height="651" alt="adminpostorder" src="https://github.com/user-attachments/assets/ee79f317-12a5-49af-9a48-513df2b1de7e" />
+
+
+
+"Exemple de requête Postman réussie (statut 200 OK)admin modifier order illustrant la mise à jour (PUT) d'une commande existante via la route /api/orders/{id} en utilisant un jeton d'authentification valide."
+
+
+<img width="736" height="653" alt="adminmodifier order" src="https://github.com/user-attachments/assets/a8a5480c-f4e0-4891-a0f9-b01f33f2fc8c" />
+
+
+"Exemple de requête Postman réussie (statut 204 No Content) illustrant la suppression d'une commande (DELETE) via la route /api/orders/{id} par un utilisateur disposant des privilèges d'administrateur."
+
+
+<img width="771" height="581" alt="admin delete order" src="https://github.com/user-attachments/assets/0d161b3a-6225-4ed5-a5eb-68e393538177" />
+
+
+"Exemple de requête Postman réussie (statut 201 Created) illustrant qu'un utilisateur standard est autorisé à créer une nouvelle commande via la route /api/orders."
+
+
+<img width="636" height="641" alt="normal user cretae order" src="https://github.com/user-attachments/assets/38dda0c0-11dd-4c4d-9757-6180cb9dba99" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour mettre à jour (PUT) une commande via la route /api/orders/{id}.
+
+
+<img width="746" height="626" alt="normalusercantupdateorder" src="https://github.com/user-attachments/assets/629b6674-7e1a-45d6-8871-6a67cd4a6aa0" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour supprimer (DELETE) une commande via la route /api/orders/{id}."
+
+
+<img width="694" height="631" alt="normalusercantdelete order" src="https://github.com/user-attachments/assets/c9986d65-806a-41fb-bc30-858f08cb4d78" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) démontrant qu'un utilisateur standard est autorisé à consulter les détails de sa propre commande via la route /api/orders/{id}."
+
+
+<img width="737" height="640" alt="canseehisownorder" src="https://github.com/user-attachments/assets/a1dca69a-dc65-4a30-9f00-1ba40700d682" />
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas l'autorisation de consulter les détails d'une commande appartenant à un autre utilisateur via la route /api/orders/{id}."
+
+
+<img width="704" height="625" alt="cantsee another orderofsomeone" src="https://github.com/user-attachments/assets/12bb47e7-de28-48e9-86c6-b6b95208cbf3" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant qu'un utilisateur standard ne récupère que la liste de ses propres commandes via la route /api/orders/."
+
+
+<img width="697" height="579" alt="normaluser see in this query just his order" src="https://github.com/user-attachments/assets/ee2e6532-9b2f-4382-a9c5-deba97c2074b" />
+
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard, même en étant authentifié avec un jeton, n'a pas les autorisations nécessaires pour créer (POST) un produit via la route /api/products/."
+
+<img width="738" height="635" alt="normaluseeven withtoken cancreateproducts" src="https://github.com/user-attachments/assets/5d56865e-d6d3-4261-9bec-3618f4554fa5" />
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour mettre à jour (PUT) les informations d'un produit via la route /api/products/{id}."
+
+
+<img width="752" height="653" alt="normalusercantupdateproducts" src="https://github.com/user-attachments/assets/a8a42ab2-8fde-4d6d-9488-e204220d268f" />
+
+
+"Exemple de requête Postman rejetée (statut 403 Forbidden) démontrant qu'un utilisateur standard n'a pas les autorisations nécessaires pour supprimer (DELETE) un produit via la route /api/products/{id}.
+
+<img width="705" height="677" alt="normalusecantdelete products" src="https://github.com/user-attachments/assets/7278b5cb-682d-4f1e-9f9d-40c702d11af2" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant que la consultation de la liste des produits via la route /api/products est publique et ne nécessite ni jeton ni authentification préalable."
+
+<img width="759" height="638" alt="anyone can see products without token or login" src="https://github.com/user-attachments/assets/6f4d42ff-08ad-414b-9aed-1decc996e310" />
+
+
+"Exemple de requête Postman réussie (statut 200 OK) illustrant la suppression d'un produit (DELETE) via la route /api/products/{id} par un administrateur authentifié."
+
+
+<img width="673" height="543" alt="admkncandelete pproduct withoutorder" src="https://github.com/user-attachments/assets/a1387bad-2fa7-4510-a8d8-b5bf43be3dda" />
+
