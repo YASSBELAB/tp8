@@ -4,63 +4,46 @@ namespace App\Policies;
 
 use App\Models\Product;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any products.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view a product.
      */
     public function view(User $user, Product $product): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create products.
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole('ADMIN');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update a product.
      */
     public function update(User $user, Product $product): bool
     {
-        return false;
+        return $user->hasRole('ADMIN');
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete a product.
      */
     public function delete(User $user, Product $product): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Product $product): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Product $product): bool
-    {
-        return false;
+        return $user->hasRole('ADMIN');
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -80,6 +81,7 @@ class ProductController extends Controller
     /**
      * POST /api/products
      * Create a new product.
+     * Authorization is handled by route middleware.
      */
     public function store(ProductStoreRequest $request)
     {
@@ -104,6 +106,7 @@ class ProductController extends Controller
     /**
      * PUT/PATCH /api/products/{product}
      * Update an existing product.
+     * Authorization is handled by route middleware.
      */
     public function update(
         ProductUpdateRequest $request,
@@ -119,11 +122,26 @@ class ProductController extends Controller
     /**
      * DELETE /api/products/{product}
      * Delete a product.
+     * Authorization is handled by route middleware.
      */
-    public function destroy(Product $product)
-    {
-        $product->delete();
+   public function destroy(Product $product)
+{
+    // Check whether this product is used in an order
+    $isUsed = DB::table('order_items')
+        ->where('product_id', $product->id)
+        ->exists();
 
-        return response()->noContent();
+    if ($isUsed) {
+        return response()->json([
+            'message' => 'Cannot delete this product because it is already used in an order.',
+            'product_id' => $product->id
+        ], 409);
     }
+
+    $product->delete();
+
+    return response()->json([
+        'message' => 'Product deleted successfully.'
+    ], 200);
+}
 }
