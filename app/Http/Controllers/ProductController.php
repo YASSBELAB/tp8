@@ -12,11 +12,44 @@ class ProductController extends Controller
 {
     /**
      * GET /api/products
-     * Display all products with filtering, sorting and pagination.
+     * Display products with search, filtering, sorting and pagination.
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        // Allowed columns for sorting
+        $allowedSorts = ['id', 'name', 'price', 'stock'];
+
+        // Get sorting parameters
+        $sort = $request->query('sort', 'id');
+        $direction = strtolower($request->query('direction', 'asc'));
+
+        // Validate sorting direction
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        // Support multiple sorting columns
+        $validSorts = [];
+
+        foreach (explode(',', $sort) as $field) {
+            $field = trim($field);
+
+            if (in_array($field, $allowedSorts)) {
+                $validSorts[] = $field;
+            }
+        }
+
+        if (empty($validSorts)) {
+            $validSorts = ['id'];
+        }
+
+        // Pagination: default 15, minimum 1, maximum 100
+        $perPage = (int) $request->query('per_page', 15);
+        $perPage = max(1, min($perPage, 100));
+
+        // Eager loading + search scope
+        $query = Product::with('category')
+            ->search($request->query('q'));
 
         // Filter by name
         if ($request->filled('name')) {
@@ -33,37 +66,13 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->price_max);
         }
 
-        // Sorting
-        $sort = $request->get('sort', 'id');
-        $direction = strtolower($request->get('direction', 'asc'));
-
-        $allowedSorts = ['id', 'name', 'price', 'quantity'];
-
-        if (!in_array($direction, ['asc', 'desc'])) {
-            $direction = 'asc';
-        }
-
-        // Multi-column sorting
-        $validSorts = [];
-
-        foreach (explode(',', $sort) as $field) {
-            $field = trim($field);
-
-            if (in_array($field, $allowedSorts)) {
-                $validSorts[] = $field;
-            }
-        }
-
-        if (empty($validSorts)) {
-            $validSorts = ['id'];
-        }
-
+        // Apply sorting
         foreach ($validSorts as $field) {
             $query->orderBy($field, $direction);
         }
 
-        // Pagination: 10 products per page
-        $products = $query->paginate(10)->withQueryString();
+        // Paginate and preserve query parameters
+        $products = $query->paginate($perPage)->withQueryString();
 
         return ProductResource::collection($products);
     }
@@ -76,23 +85,25 @@ class ProductController extends Controller
     {
         $product = Product::create($request->validated());
 
-        return (new ProductResource($product))
+        return (new ProductResource($product->load('category')))
             ->response()
             ->setStatusCode(201);
     }
 
     /**
      * GET /api/products/{product}
-     * Display one product.
+     * Display one product with its category.
      */
     public function show(Product $product)
     {
+        $product->load('category');
+
         return new ProductResource($product);
     }
 
     /**
      * PUT/PATCH /api/products/{product}
-     * Update a product.
+     * Update an existing product.
      */
     public function update(
         ProductUpdateRequest $request,
@@ -100,7 +111,9 @@ class ProductController extends Controller
     ) {
         $product->update($request->validated());
 
-        return new ProductResource($product->fresh());
+        return new ProductResource(
+            $product->fresh()->load('category')
+        );
     }
 
     /**
@@ -111,8 +124,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json([
-            'message' => 'Product deleted successfully'
-        ], 200);
+        return response()->noContent();
     }
 }

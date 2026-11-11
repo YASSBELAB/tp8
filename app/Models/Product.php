@@ -3,15 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
-        'description',
         'price',
-        'quantity',
+        'stock',
+        'description',
         'category_id',
     ];
 
@@ -19,9 +22,21 @@ class Product extends Model
         'price' => 'float',
     ];
 
-    // A product belongs to one category
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    // Search scope
+    public function scopeSearch($query, $term)
+    {
+        if (!$term) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('name', 'LIKE', "%{$term}%")
+              ->orWhere('description', 'LIKE', "%{$term}%");
+        });
     }
 }
