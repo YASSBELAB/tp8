@@ -227,3 +227,59 @@ Test d'une requête DELETE sur l'API via Postman pour supprimer un produit spéc
 
 <img width="767" height="513" alt="Screenshot 2026-11-11 000618" src="https://github.com/user-attachments/assets/affe5c1c-e031-4d85-9a9e-2a7e6a09e40b" />
 
+
+
+
+Test d'une requête GET sur l'API des catégories (/api/categories) via Postman, retournant une réponse HTTP 200 OK avec la liste des catégories au format JSON, incluant les relations avec les produits associés (telle que la catégorie "Electronics" avec ses métadonnées et ses produits imbriqués)
+
+
+<img width="717" height="617" alt="getallcat" src="https://github.com/user-attachments/assets/7067426c-59f6-4df1-a4b2-f7aa61ff24dd" />
+
+
+
+Test d'une requête POST sur l'API via Postman pour créer une nouvelle catégorie (/api/categories) avec les données JSON envoyées dans le corps ({"name": "lolo"}), retournant un statut 201 Created ainsi qu'un message de confirmation et les détails de la catégorie créée (ID 4).
+
+<img width="765" height="633" alt="postcat" src="https://github.com/user-attachments/assets/d34ad86a-2203-46b7-8c3d-e32fd6208747" />
+
+
+Test d'une requête GET sur l'API pour récupérer une catégorie spécifique par son ID (/api/categories/1) via Postman, retournant un statut 200 OK avec les détails de la catégorie "Electronics" ainsi que ses produits associés
+
+<img width="725" height="603" alt="getbyidcat" src="https://github.com/user-attachments/assets/de1ee92c-ced5-4c51-b0da-a58e047590d7" />
+
+
+
+Test d'une requête PUT sur l'API via Postman pour mettre à jour une catégorie existante (/api/categories/1), avec les nouvelles données JSON envoyées dans le corps ({"name": "Computer Accessories"}), retournant un statut 200 OK ainsi qu'un message de confirmation ("Category updated successfully") et les détails actualisés de la catégorie.
+
+
+<img width="726" height="629" alt="modifcat" src="https://github.com/user-attachments/assets/a143b833-d320-4b30-a033-f3234a299986" />
+
+
+
+"Cet endpoint permet de supprimer une catégorie de la base de données (ex: Computer Accessories) en envoyant une requête DELETE avec l'ID correspondant."
+
+<img width="703" height="532" alt="dletecat" src="https://github.com/user-attachments/assets/f1e7b303-ca7b-48d5-89b3-7e85f768dfd4" />
+
+
+Cette requête permet de créer une nouvelle commande.
+
+
+<img width="750" height="636" alt="createorder" src="https://github.com/user-attachments/assets/766e0412-bf1f-4152-92d4-dac4f391d70f" />
+
+
+"Exemple de test Postman réussi avec message succes post script (statut 201) validant la création d'une commande via l'API."   
+
+
+<img width="692" height="659" alt="avecmessagesuccess" src="https://github.com/user-attachments/assets/3c2fdec8-d492-4f84-9da5-ff7abd4aae37" />
+
+
+
+"Exécution réussie des tests automatisés (via PHP Artisan) validant les relations du modèle Order.
+
+<img width="573" height="185" alt="testpassed" src="https://github.com/user-attachments/assets/d3cec6bf-ba4c-458d-af33-9c3ca28f9db9" />
+
+
+"Diagramme de classes UML illustrant l'architecture des données et les relations entre les modèles de l'API E-commerce."
+
+
+<img width="433" height="532" alt="uml" src="https://github.com/user-attachments/assets/7dc778af-7295-4cec-a332-4033e2d53922" />
+
