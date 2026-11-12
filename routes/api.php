@@ -11,10 +11,11 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Api\AuthController;
 
 // =====================================
-// PUBLIC PRODUCT ROUTES
+// API KEY PROTECTED PRODUCT READ ROUTES
 // =====================================
 Route::apiResource('products', ProductController::class)
-    ->only(['index', 'show']);
+    ->only(['index', 'show'])
+    ->middleware('api.key');
 
 // =====================================
 // PROTECTED PRODUCT ROUTES - ADMIN ONLY
@@ -40,10 +41,12 @@ Route::middleware([
 ])->delete('/products/{product}', [ProductController::class, 'destroy']);
 
 // =====================================
-// PUBLIC CATEGORY AND CLIENT ROUTES
+// API KEY PROTECTED CATEGORY AND CLIENT ROUTES
 // =====================================
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('clients', ClientController::class);
+Route::apiResource('categories', CategoryController::class)
+    ->middleware('api.key');
+Route::apiResource('clients', ClientController::class)
+    ->middleware('api.key');
 
 // =====================================
 // PROTECTED ORDER ROUTES

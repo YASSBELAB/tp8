@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'api' => [
+        'key' => env('API_KEY', 'lab8-secret-api-key-2026'),
+    ],
+
 ];

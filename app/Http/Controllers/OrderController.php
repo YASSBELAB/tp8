@@ -11,13 +11,25 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
 class OrderController extends Controller
 {
-    /**
-     * GET /api/orders
-     * Display all orders for admin, or only own orders for normal users.
-     */
+    #[OA\Get(
+        path: '/api/orders',
+        summary: "Lister les commandes (toutes pour ADMIN, personnelles pour USER)",
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Liste paginée des commandes',
+                content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: '#/components/schemas/Order'))
+            ),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Permission manquante'),
+        ]
+    )]
     public function index(Request $request)
     {
         $user = $request->user();
@@ -42,10 +54,42 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    /**
-     * POST /api/orders
-     * Create an order with multiple items using a transaction.
-     */
+    #[OA\Post(
+        path: '/api/orders',
+        summary: 'Créer une nouvelle commande (USER et ADMIN)',
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['items'],
+                properties: [
+                    new OA\Property(property: 'client_id', type: 'integer', nullable: true, example: 1),
+                    new OA\Property(
+                        property: 'items',
+                        type: 'array',
+                        items: new OA\Items(
+                            required: ['product_id', 'quantity'],
+                            properties: [
+                                new OA\Property(property: 'product_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'quantity', type: 'integer', example: 2),
+                            ]
+                        )
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Commande créée avec succès',
+                content: new OA\JsonContent(ref: '#/components/schemas/Order')
+            ),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Permission manquante'),
+            new OA\Response(response: 422, description: 'Erreur de validation'),
+        ]
+    )]
     public function store(StoreOrderRequest $request)
     {
         $data = $request->validated();
@@ -109,10 +153,21 @@ class OrderController extends Controller
         ], 201);
     }
 
-    /**
-     * GET /api/orders/{order}
-     * Display one order with its client and products.
-     */
+    #[OA\Get(
+        path: '/api/orders/{order}',
+        summary: 'Afficher une commande (ADMIN ou propriétaire)',
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'order', in: 'path', required: true, description: 'ID de la commande', schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Détails de la commande', content: new OA\JsonContent(ref: '#/components/schemas/Order')),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé'),
+            new OA\Response(response: 404, description: 'Commande introuvable'),
+        ]
+    )]
     public function show(Order $order)
     {
         $order->load([
@@ -123,10 +178,62 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    /**
-     * PUT/PATCH /api/orders/{order}
-     * Update an order (status, client_id, and/or items).
-     */
+    #[OA\Put(
+        path: '/api/orders/{order}',
+        summary: 'Mettre à jour une commande (ADMIN uniquement)',
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'order', in: 'path', required: true, description: 'ID de la commande', schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'status', type: 'string', enum: ['pending', 'paid', 'shipped', 'cancelled'], example: 'paid'),
+                    new OA\Property(property: 'client_id', type: 'integer', example: 1),
+                    new OA\Property(
+                        property: 'items',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'product_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'quantity', type: 'integer', example: 3),
+                            ]
+                        )
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Commande mise à jour', content: new OA\JsonContent(ref: '#/components/schemas/Order')),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé / Permission manquante'),
+            new OA\Response(response: 404, description: 'Commande introuvable'),
+        ]
+    )]
+    #[OA\Patch(
+        path: '/api/orders/{order}',
+        summary: 'Mettre à jour partiellement une commande (ADMIN uniquement)',
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'order', in: 'path', required: true, description: 'ID de la commande', schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'status', type: 'string', enum: ['pending', 'paid', 'shipped', 'cancelled'], example: 'shipped'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Commande mise à jour', content: new OA\JsonContent(ref: '#/components/schemas/Order')),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé / Permission manquante'),
+        ]
+    )]
     public function update(UpdateOrderRequest $request, Order $order)
     {
         $data = $request->validated();
@@ -168,10 +275,21 @@ class OrderController extends Controller
         );
     }
 
-    /**
-     * DELETE /api/orders/{order}
-     * Delete an order.
-     */
+    #[OA\Delete(
+        path: '/api/orders/{order}',
+        summary: 'Supprimer une commande (ADMIN uniquement)',
+        tags: ['Orders'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'order', in: 'path', required: true, description: 'ID de la commande', schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'Commande supprimée'),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé / Permission manquante'),
+            new OA\Response(response: 404, description: 'Commande introuvable'),
+        ]
+    )]
     public function destroy(Order $order)
     {
         $order->delete();

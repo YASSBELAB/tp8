@@ -8,13 +8,33 @@ use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
 class ProductController extends Controller
 {
-    /**
-     * GET /api/products
-     * Display products with search, filtering, sorting and pagination.
-     */
+    #[OA\Get(
+        path: '/api/products',
+        summary: 'Liste des produits',
+        tags: ['Products'],
+        security: [['apiKeyBearer' => []], ['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'q', in: 'query', description: 'Terme de recherche', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'name', in: 'query', description: 'Filtrer par nom', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'price_min', in: 'query', description: 'Prix minimum', required: false, schema: new OA\Schema(type: 'number')),
+            new OA\Parameter(name: 'price_max', in: 'query', description: 'Prix maximum', required: false, schema: new OA\Schema(type: 'number')),
+            new OA\Parameter(name: 'sort', in: 'query', description: 'Champ de tri (id, name, price, stock)', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'direction', in: 'query', description: 'Direction du tri (asc, desc)', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'per_page', in: 'query', description: "Nombre d'éléments par page", required: false, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Succès',
+                content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: '#/components/schemas/Product'))
+            ),
+            new OA\Response(response: 401, description: 'Clé API invalide ou manquante'),
+        ]
+    )]
     public function index(Request $request)
     {
         // Allowed columns for sorting
@@ -78,11 +98,35 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * POST /api/products
-     * Create a new product.
-     * Authorization is handled by route middleware.
-     */
+    #[OA\Post(
+        path: '/api/products',
+        summary: 'Créer un nouveau produit',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name', 'price', 'stock', 'category_id'],
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'Laptop Pro'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Ordinateur portable haute performance'),
+                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 1299.99),
+                    new OA\Property(property: 'stock', type: 'integer', example: 25),
+                    new OA\Property(property: 'category_id', type: 'integer', example: 1),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Produit créé avec succès',
+                content: new OA\JsonContent(ref: '#/components/schemas/Product')
+            ),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé'),
+            new OA\Response(response: 422, description: 'Erreur de validation'),
+        ]
+    )]
     public function store(ProductStoreRequest $request)
     {
         $product = Product::create($request->validated());
@@ -92,10 +136,30 @@ class ProductController extends Controller
             ->setStatusCode(201);
     }
 
-    /**
-     * GET /api/products/{product}
-     * Display one product with its category.
-     */
+    #[OA\Get(
+        path: '/api/products/{product}',
+        summary: 'Afficher un produit',
+        tags: ['Products'],
+        security: [['apiKeyBearer' => []], ['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'product',
+                in: 'path',
+                required: true,
+                description: 'ID du produit',
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Succès',
+                content: new OA\JsonContent(ref: '#/components/schemas/Product')
+            ),
+            new OA\Response(response: 401, description: 'Clé API invalide ou manquante'),
+            new OA\Response(response: 404, description: 'Produit introuvable'),
+        ]
+    )]
     public function show(Product $product)
     {
         $product->load('category');
@@ -103,11 +167,43 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    /**
-     * PUT/PATCH /api/products/{product}
-     * Update an existing product.
-     * Authorization is handled by route middleware.
-     */
+    #[OA\Put(
+        path: '/api/products/{product}',
+        summary: 'Mettre à jour un produit',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'product',
+                in: 'path',
+                required: true,
+                description: 'ID du produit',
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'Laptop Pro M3'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Version mise à jour'),
+                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 1499.99),
+                    new OA\Property(property: 'stock', type: 'integer', example: 15),
+                    new OA\Property(property: 'category_id', type: 'integer', example: 1),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Produit mis à jour',
+                content: new OA\JsonContent(ref: '#/components/schemas/Product')
+            ),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé'),
+            new OA\Response(response: 404, description: 'Produit introuvable'),
+        ]
+    )]
     public function update(
         ProductUpdateRequest $request,
         Product $product
@@ -119,29 +215,46 @@ class ProductController extends Controller
         );
     }
 
-    /**
-     * DELETE /api/products/{product}
-     * Delete a product.
-     * Authorization is handled by route middleware.
-     */
-   public function destroy(Product $product)
-{
-    // Check whether this product is used in an order
-    $isUsed = DB::table('order_items')
-        ->where('product_id', $product->id)
-        ->exists();
+    #[OA\Delete(
+        path: '/api/products/{product}',
+        summary: 'Supprimer un produit',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'product',
+                in: 'path',
+                required: true,
+                description: 'ID du produit',
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Produit supprimé avec succès'),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 403, description: 'Accès refusé'),
+            new OA\Response(response: 404, description: 'Produit introuvable'),
+            new OA\Response(response: 409, description: 'Produit déjà utilisé dans une commande'),
+        ]
+    )]
+    public function destroy(Product $product)
+    {
+        // Check whether this product is used in an order
+        $isUsed = DB::table('order_items')
+            ->where('product_id', $product->id)
+            ->exists();
 
-    if ($isUsed) {
+        if ($isUsed) {
+            return response()->json([
+                'message' => 'Cannot delete this product because it is already used in an order.',
+                'product_id' => $product->id
+            ], 409);
+        }
+
+        $product->delete();
+
         return response()->json([
-            'message' => 'Cannot delete this product because it is already used in an order.',
-            'product_id' => $product->id
-        ], 409);
+            'message' => 'Product deleted successfully.'
+        ], 200);
     }
-
-    $product->delete();
-
-    return response()->json([
-        'message' => 'Product deleted successfully.'
-    ], 200);
-}
 }
